@@ -27,7 +27,7 @@ def main():
     sensor_mappings = conf.get('sensor_mappings')
     prometheus_port = conf.get('exporter_port', 8104)
     method = conf.get('method')
-    onewire_temperature_c = Gauge('onewire_temperature_c', 'Temperature in C', ['location'])
+    onewire_temperature_c = Gauge('onewire_temp', 'Temperature in C', ['name','id'])
 
     # Start the prometheus HTTP server
     start_http_server(prometheus_port)
@@ -78,7 +78,7 @@ def read_w1(onewire_temperature_c, sensor_mappings):
                 # A reading of 85000 seems to mean "it's not working". If you actually want to
                 # measure things that are 85°C, then my apologies.
                 if temperature != 85:
-                    onewire_temperature_c.labels(location=sensor_mappings[device_id]).set(temperature)
+                    onewire_temperature_c.labels(name=sensor_mappings[device_id],id=device_id).set(temperature)
 
         time.sleep(1)
 
