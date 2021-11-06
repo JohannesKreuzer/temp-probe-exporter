@@ -47,7 +47,7 @@ def read_serial(onewire_temperature_c, sensor_mappings, serial_port):
         line = ser.readline()
         m = re.match(r'([A-Z0-9]{16}):(-?[0-9.]+)\n', line.decode('ascii'))
         if m:
-            onewire_temperature_c.labels(location=sensor_mappings[m.group(1)]).set(m.group(2))
+            onewire_temperature_c.labels(name=sensor_mappings[m.group(1)], id=m.group(1)).set(m.group(2))
 
 def read_w1(onewire_temperature_c, sensor_mappings):
     """Read data from /sys/bus/w1/drivers/w1_slave_driver/"""
