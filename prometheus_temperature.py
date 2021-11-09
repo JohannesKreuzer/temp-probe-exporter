@@ -45,7 +45,7 @@ def read_serial(onewire_temperature_c, sensor_mappings, serial_port):
     ser = serial.Serial(serial_port, timeout=60)
     while 1:
         line = ser.readline()
-        m = re.match(r'([A-Z0-9]{16}):(-?[0-9.]+)\n', line.decode('ascii'))
+        m = re.match(r'(.*):(-?[0-9.]+)\n', line.decode('ascii'))
         if m:
             onewire_temperature_c.labels(name=sensor_mappings[m.group(1)], id=m.group(1)).set(m.group(2))
 
