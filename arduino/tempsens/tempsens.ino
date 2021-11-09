@@ -13,7 +13,7 @@ DallasTemperature sensors(&one_wire);
 // We will store an array of probes we find on initial startup. If you have
 // more than 20 probes, feel free to bump this number and see if it'll actually
 // work at all.
-DeviceAddress probes[20];
+DeviceAddress probes[40];
 int num_probes = 0;
 
 void setup() {
@@ -28,16 +28,17 @@ void setup() {
   while (one_wire.search(probes[num_probes])) {
     num_probes++;
   }
+  if (num_probes == 0){
+    Serial.println("No Sensors found.");
+  }
 }
 
 void print_address(DeviceAddress device_address) {
   // Device address is 8 bytes, iterate over them.
-  for (byte i = 0; i < 8; i++) {
-    if (device_address[i] < 16) {
-      Serial.print("0");
-    }
-    Serial.print(device_address[i], HEX);
-  }
+
+  char tBuf[30];
+  sprintf(tBuf,"%02x-%02x%02x%02x%02x%02x%02x",device_address[0],device_address[6],device_address[5],device_address[4],device_address[3],device_address[2],device_address[1]);
+  Serial.print(tBuf);
 }
 
 void print_reading(DeviceAddress device_address) {
@@ -52,6 +53,9 @@ void print_reading(DeviceAddress device_address) {
 void loop() {
   // Make sure we're not just spitting out some constant meaningless numbers
   sensors.requestTemperatures();
+   if (num_probes == 0){
+    Serial.print("No Sensors found.\n");
+  }
   for (int i = 0; i < num_probes; i++) {
     print_reading(probes[i]);
   }
